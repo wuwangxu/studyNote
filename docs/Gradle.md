@@ -113,7 +113,104 @@ dependencies {  // 闭包带参
 }
 ```
 
-## 示例
-* ToDo应用程序，只实现添加待办事项
-* java应用程序版
-* Web版
+## 自定义任务
+```Gradle
+def createDir = {   // 带参闭包
+    path ->
+        File dir = new File(path)
+        if (!dir.exists()){
+            dir.mkdirs()
+        }
+}
+
+task makeJavaDir(){
+    def paths = ['src/main/java','src/main/resources','src/test/java','src/test/resources']
+    doFirst{
+        paths.forEach(createDir)
+    }
+}
+
+task makeWebDir(){
+    dependsOn 'makeJavaDir'
+    def paths = ['src/main/webapp','src/test/webapp']
+    doLast{
+        paths.forEach(createDir)
+    }
+}
+```
+
+## 依赖管理
+### 常用仓库
+mavenLocal/mavenCentral/jcenter/自定义maven仓库/文件仓库（尽少使用）
+### 依赖阶段配置
+compile -> runtime
+testCompile -> testRuntime
+```Gradle
+// 仅作为示例
+dependencies {
+    testRuntime group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha4'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+```
+### maven仓库配置
+```Gradle
+repositories {
+    maven{  // 私服
+        url 'https://maven.aliyun.com/repository/jcenter'
+    }
+    mavenLocal()    // 本地maven仓库 /user/.m2/repository/
+    mavenCentral()
+}
+```
+## 解决版本冲突
+### 阻止
+```Gradle
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+    }
+}
+```
+### 解决冲突
+* 排除传递性依赖
+```Gradle
+compile (group: 'org.hibernate', name: 'hibernate-core', version: '5.4.0.Final'){
+    exclude group:"org.jboss.logging",module:"jboss-logging"
+}
+```
+* 强制指定一个版本
+```Gradle
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+        force 'org.slf4j:slf4j-api:1.7.24'
+    }
+}
+```
+## 多项目构建
+### 依赖子项目
+```Gradle
+compile project(":model")
+```
+### allprojects
+内容与buildprojects一样
+```Gradle
+allprojects{
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+}
+```
+
+### subprojects
+```Gradle
+subprojects{
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha4'
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+}
+```

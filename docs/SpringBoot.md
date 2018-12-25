@@ -23,3 +23,22 @@
 * Spring和Java Web相关基础
 * gradle构建项目
 * Spring Boot基础
+
+## 模块设计
+* 通用模块
+  * Util 工具
+  * Quartz 定时任务
+  * Swagger 接口管理
+* 本项目公用的模块
+  * Entity 实体
+  * Api 公共接口
+* 项目模块
+
+## 技术要点
+* 销售端
+  * jsonRpc 系统之间的调用
+  * hazelcast 缓存
+  * activemq 消息队列
+  * 自动化测试
+  * tyk 接口网关
+  * quartz 定时任务
