@@ -42,3 +42,9 @@
   * 自动化测试
   * tyk 接口网关
   * quartz 定时任务
+
+
+## 缓存
+* meecache 最早 结构单一 k/v 
+* redis 数据结构多、持久化
+* hazelcast 数据结构更多、功能更多、集群更方便、管理界面更好、spring整合更方便
